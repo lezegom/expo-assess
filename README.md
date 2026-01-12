@@ -1,50 +1,139 @@
-# Welcome to your Expo app 👋
+# Khula Trader
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A React Native mobile application for selling products and connecting with buyers, built with Expo.
 
-## Get started
+## Features
 
-1. Install dependencies
+- **Landing Screen**: Visual introduction with brand identity and call-to-action buttons
+- **User Authentication**: Sign up and login flow
+- **Profile Management**: Complete user profile during onboarding
+- **Document Upload**: Multi-step document submission with support for photos and files
+- **Progress Tracking**: Visual progress indicators for multi-step processes
+
+## Tech Stack
+
+- **Framework**: React Native with Expo (~54.0)
+- **Navigation**: Expo Router (file-based routing)
+- **Language**: TypeScript
+- **Styling**: React Native StyleSheet with centralized theme
+- **Icons**: Lucide React Native
+- **Storage**: AsyncStorage
+
+## Project Structure
+
+```
+expo-assess/
+├── app/                    # File-based routing (Expo Router)
+│   ├── _layout.tsx        # Root layout
+│   ├── index.tsx          # Entry point
+│   ├── landing.tsx        # Landing screen route
+│   └── auth/              # Authentication routes
+│       └── signup.tsx
+├── components/
+│   ├── screens/           # Screen components
+│   │   ├── landing-screen.tsx
+│   │   ├── profile-screen.tsx
+│   │   └── documents-screen.tsx
+│   ├── ui/                # Reusable UI components
+│   │   ├── button.tsx
+│   │   ├── input.tsx
+│   │   ├── logo.tsx
+│   │   └── progress-bar.tsx
+│   └── upload-modal.tsx
+├── constants/
+│   ├── styles.ts          # Centralized styles (all components)
+│   └── theme.ts           # Color palette, spacing, typography
+├── assets/
+│   └── images/            # Image assets
+└── utils/
+    └── async.ts           # Utility functions
+```
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v16 or higher)
+- npm or yarn
+- Expo Go app (for testing on physical device)
+- iOS Simulator or Android Emulator (optional)
+
+### Installation
+
+1. **Clone the repository**
+
+   ```bash
+   git clone git@github.com:lezegom/expo-assess.git
+   cd expo-assess
+   ```
+
+2. **Install dependencies**
 
    ```bash
    npm install
    ```
 
-2. Start the app
+### Running the Project
+
+1. **Start the development server**
 
    ```bash
-   npx expo start
+   npm start
    ```
 
-In the output, you'll find options to open the app in a
+   Or use specific commands:
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+   ```bash
+   npm run ios        # Open in iOS Simulator
+   npm run android    # Open in Android Emulator
+   npm run web        # Open in web browser
+   ```
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+2. **Scan QR code with Expo Go**
 
-## Get a fresh project
+   - Install Expo Go on your iOS or Android device
+   - Scan the QR code from the terminal
+   - The app will load on your device
 
-When you're ready, run:
+### Development Commands
 
 ```bash
-npm run reset-project
+npm run lint          # Run ESLint to check code quality
+npm start             # Start Expo development server
+npm run reset-project # Reset to blank project (removes starter code)
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Code Organization
 
-## Learn more
+### Styling
 
-To learn more about developing your project with Expo, look at the following resources:
+All styles are centralized in `constants/styles.ts` and organized by screen/component. Colors, spacing, and typography values reference the theme constants from `constants/theme.ts` for consistency.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+**Theme Structure:**
+- `colors`: Primary, secondary, background, text, border colors
+- `spacing`: Consistent spacing scale (xs to huge)
+- `typography`: Font sizes and weights
+- `borderRadius`: Standard border radius values
 
-## Join the community
+### Component Documentation
 
-Join our community of developers creating universal apps.
+All components and screens include JSDoc comments describing their purpose, props, and usage.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+### Linting
+
+ESLint is configured with React Native recommended rules. Run `npm run lint` to check for issues.
+
+## Development Notes
+
+- **File-based routing**: Routes are defined by the file structure in the `app/` directory
+- **Type safety**: TypeScript is used throughout for type checking
+- **Centralized styles**: Avoid inline styles; use constants/styles.ts
+- **Theme consistency**: Reference theme constants for colors and spacing
+- **Component reusability**: UI components are designed to be reusable and configurable
+
+## Learn More
+
+- [Expo Documentation](https://docs.expo.dev/)
+- [Expo Router](https://docs.expo.dev/router/introduction/)
+- [React Native Documentation](https://reactnative.dev/)
+- [TypeScript Documentation](https://www.typescriptlang.org/)
