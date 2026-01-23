@@ -452,6 +452,12 @@ const styles = StyleSheet.create({
   trCorner: {
     borderTopRightRadius: 0,
   },
+  errorText: {
+    color: '#EF4444',
+    fontSize: 14,
+    marginTop: 8,
+    textAlign: 'center',
+  },
 });
 
 export default styles;

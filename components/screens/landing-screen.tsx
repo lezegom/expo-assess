@@ -89,15 +89,13 @@ export const LandingScreen = () => {
           <Button 
             variant="outline" 
             onPress={() => console.log('Sign up pressed')}
-            // style={styles.buttonFlex}
           >
             Sign up
           </Button>
           
           <Button 
             variant="secondary" 
-            onPress={() => router.push('/auth/signup')}
-            // style={styles.buttonFlex}
+            onPress={() => router.push('/auth/login')}
           >
             Log in
           </Button>
