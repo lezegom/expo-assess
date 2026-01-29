@@ -1,57 +1,45 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { GET_FARMER_DETAILS, LOGIN_MUTATION } from '../../graphql/auth.queries';
+import { apolloClient } from '../../lib/apollo-client';
 import type { AuthUser } from '../slices/authSlice';
+
+type LoginResponse = {
+  login: {
+    success: boolean;
+    token: string;
+    message: string;
+    farmerId: string | null;
+    state: number;
+    active: boolean | null;
+    verified: boolean;
+  };
+};
+
+type FarmerDetailsResponse = {
+  getFarmerDetails: AuthUser;
+};
 
 export const login = createAsyncThunk(
   'auth/login',
   async (
     credentials: { username: string; password: string; registrationId?: string },
   ): Promise<{ token: string; user: AuthUser }> => {
-    const graphqlUrl = 'https://graph.khuladev.co.za/graphql';
     const registrationId = credentials.registrationId || 'default-registration-id';
 
     // Step 1: Login to get auth token
-    const loginQuery = `
-      query Login($username: String!, $password: String!, $registrationId: String!) {
-        login(username: $username, password: $password, registrationId: $registrationId) {
-          success
-          token
-          message
-          farmerId
-          state
-          active
-          verified
-        }
-      }
-    `;
-
-    const loginResponse = await fetch(graphqlUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const loginResponse = await apolloClient.query<LoginResponse>({
+      query: LOGIN_MUTATION,
+      variables: {
+        username: credentials.username,
+        password: credentials.password,
+        registrationId,
       },
-      body: JSON.stringify({
-        query: loginQuery,
-        variables: {
-          username: credentials.username,
-          password: credentials.password,
-          registrationId,
-        },
-      }),
+      fetchPolicy: 'network-only',
     });
 
-    if (!loginResponse.ok) {
-      throw new Error(`Login failed: ${loginResponse.statusText}`);
-    }
+    console.log('Login response:', loginResponse.data);
 
-    const loginData = await loginResponse.json();
-
-    console.log('Login response:', loginData);
-
-    if (loginData.errors) {
-      throw new Error(loginData.errors[0]?.message || 'Login failed');
-    }
-
-    const loginResult = loginData.data?.login;
+    const loginResult = loginResponse.data?.login;
 
     if (!loginResult) {
       throw new Error('Invalid response from server');
@@ -68,42 +56,23 @@ export const login = createAsyncThunk(
     const token = loginResult.token;
 
     // Step 2: Fetch farmer details using the token
-    const farmerDetailsQuery = `
-      query GetFarmerDetails {
-        getFarmerDetails {
-          id
-          userId
-          name
-          username
-          surname
-          email
-          image
-        }
-      }
-    `;
-
     try {
-      const farmerDetailsResponse = await fetch(graphqlUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'authorization': token,
+      const farmerDetailsResponse = await apolloClient.query<FarmerDetailsResponse>({
+        query: GET_FARMER_DETAILS,
+        context: {
+          headers: {
+            authorization: token,
+          },
         },
-        body: JSON.stringify({
-          query: farmerDetailsQuery,
-        }),
+        fetchPolicy: 'cache-first',
       });
 
-      if (farmerDetailsResponse.ok) {
-        const farmerDetailsData = await farmerDetailsResponse.json();
+      console.log('Farmer details response:', farmerDetailsResponse.data);
 
-        console.log('Farmer details response:', farmerDetailsData);
-
-        if (!farmerDetailsData.errors && farmerDetailsData.data?.getFarmerDetails) {
-          const fetchedUser = farmerDetailsData.data.getFarmerDetails;
-          console.log('Login successful with user:', fetchedUser);
-          return { token, user: fetchedUser };
-        }
+      if (farmerDetailsResponse.data?.getFarmerDetails) {
+        const fetchedUser = farmerDetailsResponse.data.getFarmerDetails;
+        console.log('Login successful with user:', fetchedUser);
+        return { token, user: fetchedUser };
       }
     } catch (error) {
       // If farmer details fail, continue with basic user info
